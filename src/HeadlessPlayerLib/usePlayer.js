@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 export function usePlayer() {
   const videoRef = useRef(null);
@@ -11,32 +11,35 @@ export function usePlayer() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const togglePlay = () => {
-    if (!videoRef.current) return;
-    videoRef.current.paused
-      ? videoRef.current.play()
-      : videoRef.current.pause();
-  };
+  const togglePlay = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.paused ? video.play() : video.pause();
+  }, []);
 
-  const toggleMute = () => {
-    if (!videoRef.current) return;
-    videoRef.current.muted = !videoRef.current.muted;
-    setIsMuted(videoRef.current.muted);
-  };
+  const toggleMute = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setIsMuted(video.muted);
+  }, []);
 
-  const handleSeek = (value) => {
-    if (!videoRef.current) return;
-    videoRef.current.currentTime = value;
-  };
+  const handleSeek = useCallback((value) => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.currentTime = value;
+  }, []);
 
-  const toggleFullscreen = () => {
-    if (!containerRef.current) return;
+  const toggleFullscreen = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
     if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen();
+      container.requestFullscreen();
     } else {
       document.exitFullscreen();
     }
-  };
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
