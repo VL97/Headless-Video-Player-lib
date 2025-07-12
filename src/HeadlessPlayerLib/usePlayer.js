@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function usePlayer() {
   const videoRef = useRef(null);
@@ -6,9 +6,10 @@ export function usePlayer() {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [progress, setProgress] = useState(0); // in %
+  const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const togglePlay = () => {
     if (!videoRef.current) return;
@@ -25,7 +26,7 @@ export function usePlayer() {
 
   const handleSeek = (value) => {
     if (!videoRef.current) return;
-    videoRef.current.currentTime = (value / 100) * duration;
+    videoRef.current.currentTime = value;
   };
 
   const toggleFullscreen = () => {
@@ -43,18 +44,24 @@ export function usePlayer() {
 
     const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
-    const onTimeUpdate = () => {
-      setProgress((video.currentTime / video.duration) * 100);
-      setDuration(video.duration);
-    };
+    const onTimeUpdate = () => setProgress(video.currentTime);
     const onVolumeChange = () => setIsMuted(video.muted);
     const onFullscreenChange = () =>
       setIsFullscreen(!!document.fullscreenElement);
+    const onLoadedMetadata = () => setDuration(video.duration);
+
+    const onWaiting = () => setIsLoading(true);
+    const onPlaying = () => setIsLoading(false);
+    const onCanplay = () => setIsLoading(false);
 
     video.addEventListener('play', onPlay);
     video.addEventListener('pause', onPause);
     video.addEventListener('timeupdate', onTimeUpdate);
     video.addEventListener('volumechange', onVolumeChange);
+    video.addEventListener('loadedmetadata', onLoadedMetadata);
+    video.addEventListener('waiting', onWaiting);
+    video.addEventListener('playing', onPlaying);
+    video.addEventListener('canplay', onCanplay);
     document.addEventListener('fullscreenchange', onFullscreenChange);
 
     return () => {
@@ -62,6 +69,10 @@ export function usePlayer() {
       video.removeEventListener('pause', onPause);
       video.removeEventListener('timeupdate', onTimeUpdate);
       video.removeEventListener('volumechange', onVolumeChange);
+      video.removeEventListener('loadedmetadata', onLoadedMetadata);
+      video.removeEventListener('waiting', onWaiting);
+      video.removeEventListener('playing', onPlaying);
+      video.removeEventListener('canplay', onCanplay);
       document.removeEventListener('fullscreenchange', onFullscreenChange);
     };
   }, []);
@@ -74,6 +85,7 @@ export function usePlayer() {
     progress,
     duration,
     isFullscreen,
+    isLoading,
     togglePlay,
     toggleMute,
     handleSeek,
