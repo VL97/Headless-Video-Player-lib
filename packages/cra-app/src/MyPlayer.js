@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePlayer } from './HeadlessPlayerLib/usePlayer.js';
+import { usePlayer } from 'headless-video-player-lib';
 
 export const MyPlayer = ({ src, width = 540 }) => {
   const {

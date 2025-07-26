@@ -1,25 +1,27 @@
 {
-  "name": "react",
+  "name": "headless-video-player-monorepo",
   "version": "1.0.0",
-  "description": "",
-  "keywords": [],
-  "main": "src/index.tsx",
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-scripts": "^5.0.0"
+  "description": "Monorepo for headless video player library with multiple CRA packages",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "clean": "lerna clean",
+    "start": "lerna run start --scope=cra-app",
+    "build": "lerna run build",
+    "test": "lerna run test",
+    "start:app": "lerna run start --scope=cra-app",
+    "build:lib": "lerna run build --scope=headless-video-player-lib",
+    "build:app": "lerna run build --scope=cra-app",
+    "dev:lib": "lerna run dev --scope=headless-video-player-lib"
   },
   "devDependencies": {
-    "@types/react": "19.0.0",
-    "@types/react-dom": "19.0.0",
-    "loader-utils": "3.2.1",
-    "typescript": "5.7.2"
+    "lerna": "^8.2.3"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  },
-  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"]
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
 }
