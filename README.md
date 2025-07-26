@@ -27,6 +27,56 @@ yarn add headless-video-player-lib
 ```
 ---
 
+## 🚀 Quick Start
+
+Use the hook in your component:
+
+```jsx
+import React from 'react';
+import { usePlayer } from 'headless-video-player-lib';
+
+export const MyPlayer = ({ src }) => {
+  const {
+    videoRef,
+    containerRef,
+    isPlaying,
+    isMuted,
+    progress,
+    duration,
+    isLoading,
+    togglePlay,
+    toggleMute,
+    handleSeek,
+    toggleFullscreen,
+  } = usePlayer();
+
+  return (
+    <div ref={containerRef}>
+      <video ref={videoRef} src={src} />
+      {isLoading && <div>Loading...</div>}
+      <div>
+        <button onClick={togglePlay}>
+          {isPlaying ? 'Pause' : 'Play'}
+        </button>
+        <button onClick={toggleMute}>
+          {isMuted ? 'Unmute' : 'Mute'}
+        </button>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={(progress / duration) * 100 || 0}
+          onChange={(e) =>
+            handleSeek((Number(e.target.value) / 100) * duration)
+          }
+        />
+        <button onClick={toggleFullscreen}>Fullscreen</button>
+      </div>
+    </div>
+  );
+};
+```
+
 ## 📘 API Reference
 
 ### `usePlayer(): PlayerControls`
